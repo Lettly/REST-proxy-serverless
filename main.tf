@@ -21,13 +21,13 @@ resource "google_storage_bucket" "bucket" {
 
 data "archive_file" "function_proxy" {
   type             = "zip"
-  source_file      = "${path.module}/functions/proxy/function.js"
+  source_dir       = "${path.module}/functions/proxy"
   output_file_mode = "0666"
-  output_path      = "${path.module}/.files/function_proxy.js.zip"
+  output_path      = "${path.module}/.files/function_proxy.zip"
 }
 
 resource "google_storage_bucket_object" "archive" {
-  name   = "function_proxy.js.zip"
+  name   = "${data.archive_file.function_proxy.output_md5}.zip"
   bucket = google_storage_bucket.bucket.name
   source = data.archive_file.function_proxy.output_path
 }
@@ -35,7 +35,7 @@ resource "google_storage_bucket_object" "archive" {
 resource "google_cloudfunctions_function" "function" {
   name        = "function-proxy"
   description = "My function"
-  runtime     = "nodejs16"
+  runtime     = "nodejs18"
 
   available_memory_mb   = 128
   source_archive_bucket = google_storage_bucket.bucket.name

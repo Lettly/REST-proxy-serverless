@@ -22,7 +22,7 @@ exports.helloWorld = async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
 
     const url = req.path.replace("/", "");
-    const hostname = url.split("/")[0];
+    const hostname = url.replace("https://", "").replace("http://", "").split("/")[0];
     const path = url.split("/").slice(1).join("/");
     const options = {
         hostname: hostname,
@@ -31,6 +31,7 @@ exports.helloWorld = async (req, res) => {
         method: req.method,
         headers: req.headers
     };
+    console.log("options: ", JSON.stringify(options));
     req.method != "GET" ? options.body = req.body : null;
 
     const proxy = request(options, (response) => {

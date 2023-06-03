@@ -1,5 +1,5 @@
 var net = require('net');
-var http = require('http');
+var https = require('https');
 var url = require('url');
 
 exports.proxy = async (clientReq, clientRes) => {
@@ -15,7 +15,7 @@ exports.proxy = async (clientReq, clientRes) => {
     console.log("options: ", JSON.stringify(options));
 
     // create socket connection on behalf of client, then pipe the response to client response (pass it on)
-    var serverConnection = http.request(options, function (res) {
+    var serverConnection = https.request(options, function (res) {
         clientRes.writeHead(res.statusCode, res.headers)
         res.pipe(clientRes);
     });
